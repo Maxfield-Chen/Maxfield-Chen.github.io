@@ -35,7 +35,7 @@ To reverse we need to take (password[i] ^ username[i]) - salt[i] = secretpass[i]
 ![Admin Login]({{ site.baseurl }}/images/login.png)
 
 
-In order to login as admin, you have to match the 16 bytes taken from urandom during gen\_pass after seeing the salted password. Using the following formula, we can take the generated password and reverse it to reveal the secret bytes by printing 30 null bytes. Xor returns the original byte with used with the null byte and adding zero isn't a problem, so the secret password is simply printed to the screen for our convenience.
+In order to login as admin, you have to match the 16 bytes taken from urandom during gen\_pass after seeing the salted password. Using the previous formula, we can take the generated password and reverse it to reveal the secret bytes by printing 30 null bytes. Xor returns the original byte with used with the null byte and adding zero isn't a problem, so the secret password is simply printed to the screen for our convenience.
 
 ## Debug Mode:
 ![Admin Login]({{ site.baseurl }}/images/printmenuvuln.png)
@@ -47,11 +47,11 @@ Once we log in, we can use 6 to turn on debug mode and 4 to verify it was set co
 ![Shellcode as a Tw33t]({{ site.baseurl }}/images/shellcode.png)
 
 
-Once admin is gained there's a vulnerable printf which uses the last tweet as a format string in print\_menu (vuln at 0x80490e5 in code). This lets us hijack control flow in any manner of ways, but before we do that we have to figure out what we want to run! I figured the easiest was to store shellcode was actually in the tw33t's the provided us! The only tricky part would be to break up the shellcode into 2 separate links and figure the relative jump between them. Luckily our newly found format vulnerability comes to the rescue! The first item on the stack is the tail of the linked list, so a simple reveals the location of our shellcode links! The first tweet is always stored at 0x804e008 and the second tweet is always stored at 0x0804e040.
+Once admin is gained there's a vulnerable printf which uses the last tweet as a format string in print\_menu (vuln at 0x80490e5 in code). This lets us hijack control flow in any manner of ways, but before we do that we have to figure out what we want to run! I figured the easiest way to store shellcode was actually in the tw33t's they provided us! The only tricky part would be breaking up the shellcode into 2 separate links and determining the relative jump between them. Luckily our newly found format vulnerability comes to the rescue! The first item on the stack is the tail of the linked list, so a simple "%x" reveals the location of our shellcode links! The first tweet is always stored at 0x804e008 and the second tweet is always stored at 0x0804e040.
 
 ## Hijacking Control Flow:
 ![Checksec]({{ site.baseurl }}/images/checksec.png)
-Checksec shows that RELRO is partial which means that GOT table overwrites are fair game. I used readelf --relocs to find the address of exit in the GOT table. Now we know we need to overwrite the exit address (in this instance 0x0804d03c) with our first link of shellcode (0x804e008). Given the very limited 16 bytes of our format string I knew I would have to use direct parameter access. After some testing I found that %8$ was the correct parameter. Then I tested the default value and found it to be equal to 0xd. Using the traditional format string overwrite formula of wanted - current + 8 I realized that if I wanted to write a small byte it was possible for me to need to write a negative number of values! To mitigate this I simply added 256 to any value I would have written causing it to overflow nicely. I didn't want to clobber so I wrote the following function using hhn in order to compose a "meanTw33t" which would overwrite one byte of the exit entry:
+Checksec shows that RELRO is partial which means that GOT table overwrites are fair game. I used `readelf --relocs` to find the address of exit in the GOT table. Now we know we need to overwrite the exit address (in this instance 0x0804d03c) with our first link of shellcode (0x804e008). Given the very limited 16 bytes of our format string I knew I would have to use direct parameter access. After some testing I found that `%8$` was the correct parameter. Then I tested the default value and found it to be equal to `0xd`. Using the traditional format string overwrite formula of `wanted - current + 8` I realized that if I wanted to write a small byte it was possible for me to need to write a negative number of values! To mitigate this I simply added 256 to any value I would have written causing it to overflow nicely. I didn't want to clobber so I wrote the following function using hhn in order to compose a "meanTw33t" which would overwrite one byte of the exit entry:
 
 ```
 def writeMeanTw33t(retAddr, byteVal):
@@ -59,7 +59,7 @@ def writeMeanTw33t(retAddr, byteVal):
   #The + 256 is to manage any weirdness with negativity. Just play it safe.
   writeVal = str(int(byteVal, 16) - 0x0d + 8 + 256)
   retVal = "A" + retAddr + '%' + writeVal + "x%8$hhn"
-  my\_print("1\n")
+  my_print("1\n")
   print(retVal+'\n')
 ```
 
@@ -67,7 +67,8 @@ def writeMeanTw33t(retAddr, byteVal):
 This ended up working quite well and so I transitioned to the very last link of this project, which was simply tweaking my shellcode to fit within the two addresses.
 
 ## Shellcoding:
-Two links, one of 14 bytes and 2 bytes for a jump, and another 16 bytes of pure shellcode. Initially I tried to use some hacky shellcode I found online but it was too frustrating and I ended up just writing my own as follows:
+Two links, one of 14 bytes with 2 bytes reserved for a jump, and another 16 bytes of pure shellcode. Initially I tried to use some hacky shellcode I found online but it was too frustrating and I ended up just writing my own as follows:
+
 ```
 def genShellCode(which):
     shellcode = []
@@ -109,6 +110,7 @@ I added nop's to make each link a clean 16 bytes. With this in place I was ready
 Input was a _massive_ challenge during this project. Tw33tchainz uses some weird buggy fgets return value checking which makes life very difficult. Essentially what it amounts to is that you cannot close the pipe of input without causing tw33tchainz to go into an infinite loop. The way I solved this was by having one python program handle everything and piping the output of that program directly into tw33tchainz. This was the final solution after testing bash scripting with tail, FIFO's and a number of other equally insane solutions. The only piece of input I actually need from the user is the generated password at the start, so I display a little prompt for the password and the rest is done automatically! Check the attached python files below for details.
 
 Usage: "(python exploit.py; cat -) | /levels/project1/tw33tchainz"
+Flag: "m0\_tw33ts\_m0\_ch4inz\_n0\_m0n3y"
 
 Enjoy your shell :)
 
