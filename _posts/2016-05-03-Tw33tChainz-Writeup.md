@@ -110,6 +110,7 @@ I added nop's to make each link a clean 16 bytes. With this in place I was ready
 Input was a _massive_ challenge during this project. Tw33tchainz uses some weird buggy fgets return value checking which makes life very difficult. Essentially what it amounts to is that you cannot close the pipe of input without causing tw33tchainz to go into an infinite loop. The way I solved this was by having one python program handle everything and piping the output of that program directly into tw33tchainz. This was the final solution after testing bash scripting with tail, FIFO's and a number of other equally insane solutions. The only piece of input I actually need from the user is the generated password at the start, so I display a little prompt for the password and the rest is done automatically! Check the attached python files below for details.
 
 Usage: "(python exploit.py; cat -) | /levels/project1/tw33tchainz"
+
 Flag: "m0\_tw33ts\_m0\_ch4inz\_n0\_m0n3y"
 
 Enjoy your shell :)
