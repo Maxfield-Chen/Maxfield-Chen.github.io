@@ -117,7 +117,7 @@ Flag: "m0\_tw33ts\_m0\_ch4inz\_n0\_m0n3y"
 
 Enjoy your shell :)
 
-Code: _https://gist.github.com/Maxfield-Chen/8e7d354a61bb59f0ceb7d354b2f86407_
+Code: [_https://gist.github.com/Maxfield-Chen/8e7d354a61bb59f0ceb7d354b2f86407_]
 
 
 ![Goodbye!]({{ site.baseurl }}/images/exitScreen.png)
