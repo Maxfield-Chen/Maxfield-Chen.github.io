@@ -14,7 +14,7 @@ Tw33tchainz seems to be a simple program. It asks the user for a username and a 
 ![Banner!]({{ site.baseurl }}/images/banner.png)
 
 
-Early static analysis revealed that there is a 6th option which allows the user debug privledges if an admin variable has been set. Even from a glance there appear to be multiple bugs and potential vulnerabilites. The display sometimes seems to print random characters suggesting buffer mismatching, and ocasionally my input gets asked for twice. Some static analysis should help clear up some of these oddities. It should be noted in case we need to rop, that libc is included and relro is partial. We also see a call of signal(11) which pops up a goofy duck picture if you should be so lucky as to cause a segfault.
+Early static analysis revealed that there is a 6th option which allows the user debug privledges if an admin variable has been set. Even from a glance there appear to be multiple bugs and potential vulnerabilites. The display sometimes seems to print random characters suggesting buffer mismatching, and ocasionally my input gets asked for twice. Some static analysis should help clear up some of these oddities. It should be noted in case we need to rop, that libc is included and relro is partial. We also see a custom segfault handler which pops up a goofy duck picture if you should be so lucky as to cause a segfault.
 
 ## Password Hashing:
 Basic Reversing revealed these facts:
