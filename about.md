@@ -4,7 +4,7 @@ title: About
 permalink: /about/
 ---
 
-My name is Maxfield Chen, I'm a Junior at Rensselaer Polytechnic Institute of Technology studying to become a Computer Science Major. I love computer security and redsec nonsense, expect postings on the basic and arcane aspects of security.
+My name is Maxfield Chen, I'm a Junior at Rensselaer Polytechnic Institute of Technology studying to become a Computer Science Major. I love computer security and redsec nonsense, expect postings on the basic and arcane aspects of hacking the world.
 
 One day I aspire to join Cicada 3301.
 
