@@ -131,6 +131,7 @@ for p in procs:
 ### Exploit Automation
 
 My code is fully contained in a single function and requires no input from the user, see the gists below:
+
   -Main: https://gist.github.com/3a5e261ec0ea5dfce87fab6d88719bb0
 
   -Launch Nuke on General Clark: https://gist.github.com/1a6abe807335e92b0022116114c626ca
