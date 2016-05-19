@@ -74,7 +74,7 @@ encryption_suite = AES.new(aes_key, AES.MODE_CBC, IV)
 plain_text = encryption_suite.decrypt(endCipher)
 ```
 
-Because AES is symmetric, upon encryption by rpisec\_nuke, my desired plaintext will be the cipher text! This was mostly a trouble o reversing, once I understood all the inputs to AES and how the structs lined up it was relatively simply to create this code and bypass key3. 
+Because AES is symmetric, upon encryption by rpisec\_nuke, my desired plaintext will be the cipher text! Most of the difficulty of this key was the reversing, once I understood all the inputs to AES and how the structs lined up it was relatively simply to create this code and bypass key3. 
 
 
 ## NUKE86.OS Programming
