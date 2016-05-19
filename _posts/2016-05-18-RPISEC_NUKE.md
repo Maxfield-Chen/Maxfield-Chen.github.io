@@ -32,7 +32,7 @@ Key 2 is much more involved than key 1, from the difficulty of reversing to the 
 
  After I decoded all the structs, It was a little easier to read through the disassembly. I found out that they use openssl's implementation of AES so unlikely that it's a pure RE challenge. Despite this, I determined that they do 2 separate rounds of AES encryption, once with your plaintext and your key using a static IV, and once with their plaintext and their key. The ultimate goal being to have the two match as the string "KING CROWELL" I started looking at key 3 as key 1 was too simple to contain any real vuln. I found this free in key 3 which actually frees the same memory as used in key 2 leaving dangling pointers to 2's structure in 3.
 
-![UAF]({{ site.baseurl }}/images/key3uaf.png)
+![Challenge]({{ site.baseurl }}/images/challenge.png)
 
 This vulnerability allows us to fail 2's challenge but initialize the structure which is then exposed through the 64 byte challenge printing in key 3. More reversing found that the exact structure ends up as 32 bytes of plaintext, 16 bytes of the IV for AES and 16 bytes of the true key. The only problem is that before the key is shown in key3 it is xor'd with rand integer by integer. So it looks like it's time to break rand. They do give us the time somewhat delayed but in main, rand is seeded with the current time and a seemingly random heap address.
 
