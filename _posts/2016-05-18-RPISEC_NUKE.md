@@ -99,7 +99,7 @@ def generateCheckSum(payload, checksum, end):
 
 ![launchOption]({{ site.baseurl }}/images/launchOption.png)
 
-This lets me enter any data I want (% 4) and will output the correct string that passess the checksum. Once we past the checksum we are greeted with what appears to be a simulated operating system. Essentially this "operating system" is a switch statement which reads in data from the string used for the checksum character by character. This switch has a number of options, typing "DOOM" will cause a nuke to be launched and "DISARM" will cancel the launch. Typing "\x53" will write to a targetting buffer. Typing "0x49" increments the pointer to that targeting buffer. Typing "0x52" will allow you to enter a new checksum and "reprogram the nuke". Finally, typing END will also shutdown the nuke.
+This lets me enter any data I want (% 4) and will output the correct string that passes the checksum. Once we past the checksum we are greeted with what appears to be a simulated operating system. Essentially this "operating system" is a switch statement which reads in data from the string used for the checksum character by character. This switch has a number of options, typing "DOOM" will cause a nuke to be launched and "DISARM" will cancel the launch. Typing "\x53" will write the next char in the input buffer to a targetting buffer. Typing "0x49" increments the pointer to that targeting buffer. Typing "0x52" will allow you to enter a new checksum and "reprogram the nuke". Finally, typing END will also shutdown the nuke.
 
 ![gotime]({{ site.baseurl }}/images/nukelaunch.png)
 
@@ -108,7 +108,9 @@ The first thing to do obviously was to launch a random nuke by typing DOOM. Afte
 
 ![byeClark]({{ site.baseurl }}/images/general_clark.png)
 
-RIP General Clark. With that out of the way I decided to look for ways to escape this switch statement and get the final password to finish the game. From reversing the structure, I knew that the targeting buffer started at \x208 within the structure and at \x288 and \x28C there were function pointers to disarm and detonate nuke respectively. So I needed to increment \x80 and 140 times respectively in order to leak a known functions address and then overwrite the detonate function. Leaking the address allowed me to calculate relative offsets to important functions like system(Not that that would have been too helpful ;). 
+RIP General Clark.
+
+With that out of the way I decided to look for ways to escape this switch statement and get the final password to finish the game. From reversing the structure, I knew that the targeting buffer started at \x208 within the structure and at \x288 and \x28C there were function pointers to disarm and detonate nuke respectively. So I needed to increment \x80 and 140 times respectively in order to leak a known functions address(using "\x4F") and then overwrite the detonate function. Leaking the address allowed me to calculate relative offsets to important functions like system (Not that that would have been too helpful ;). 
 
 I was able to cause a segfault using the above technique and reliably leak an address but unfortunately ran out of time and was unable to complete the rop in order to gain a shell through execve. Detonate in particular was a useful function to overwrite as it is already called using a user controlled buffer as an argument. In my testing to create a rop chain I know I would have needed to stack pivot as my current location was not very useful and would have dropped me into arbitrary memory after my one return.
 
