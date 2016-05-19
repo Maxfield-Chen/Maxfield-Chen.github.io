@@ -1,6 +1,6 @@
 ---
 layout: post
-title: RPISEC NUKE: WRITEUP
+title: RPISEC NUKE
 ---
 
 
