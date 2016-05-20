@@ -18,7 +18,7 @@ Once all three keys have been correctly entered(or worked around), a new option 
 
 ![Key 1]({{ site.baseurl }}/images/key1.png)
 
-I took an initial look in IDA and in relatively short time found the relevant strncmp function. I loaded up the nuke program in gdb and set a breakpoint at that address. Multiple runs showed that the key is static, "D3E60C90579EEE92EFD46898A911B0AF". Entering this allows us to bypass the first key with relatively little fuss.
+This challenge was pretty simple, it just took a quick look in ida. This challenge is entirely based around a single strncmp. strncmp stops at null and fgets has no qualms with you entering nulls so I simply filled the buffer with nulls and passed the chall. Entering this allows us to bypass the first key with relatively little fuss.
 
 ![Crucial Key1]({{ site.baseurl }}/images/key1strncmp.png)
 
@@ -132,7 +132,7 @@ for p in procs:
 
 My code is fully contained in a single function and requires no input from the user, see the gists below:
 
-  -Main: https://gist.github.com/3a5e261ec0ea5dfce87fab6d88719bb0
+  -Main: https://gist.github.com/e62f4fb05333463756a5b23f508a8768
 
   -Launch Nuke on General Clark: https://gist.github.com/1a6abe807335e92b0022116114c626ca
 
